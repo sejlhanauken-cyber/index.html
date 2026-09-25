@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Оставить заявку</title>
+<style>
+  :root{
+    --dark:#1c1c1c;
+    --line:rgba(255,255,255,.28);
+    --muted:#9a9a9a;
+    --accent:#3fa9e0;
+    --white:#ffffff;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *,*::before,*::after{box-sizing:inherit}
+  html,body{margin:0;height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;
+    background:var(--dark);
+    color:var(--white);
+  }
+  .page{
+    min-height:100%;
+    display:grid;
+    grid-template-columns:1fr 220px;
+  }
+
+  /* LEFT: FORM */
+  .panel-form{
+    background:var(--dark);
+    padding:64px 6vw 48px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .panel-form h1{
+    font-weight:400;
+    font-size:clamp(1.9rem,3.4vw,2.7rem);
+    line-height:1.2;
+    max-width:14ch;
+    margin:0 0 48px;
+  }
+  form{max-width:560px}
+  .field{
+    border-bottom:1px solid var(--line);
+    padding:10px 2px 12px;
+    margin-bottom:28px;
+  }
+  .field label{
+    display:block;
+    color:var(--muted);
+    font-size:.95rem;
+    margin-bottom:6px;
+  }
+  .field input{
+    width:100%;
+    background:transparent;
+    border:0;
+    outline:0;
+    color:var(--white);
+    font-size:1.05rem;
+    font-family:inherit;
+    padding:2px 0 4px;
+  }
+  .field input::placeholder{color:rgba(255,255,255,.35)}
+  .field.invalid{border-bottom-color:#e0603f}
+  .field-error{
+    display:none;
+    color:#e0603f;
+    font-size:.82rem;
+    margin-top:6px;
+  }
+  .field.invalid .field-error{display:block}
+
+  .captcha{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:28px;
+  }
+  .captcha-question{
+    color:var(--muted);
+    font-size:.95rem;
+    white-space:nowrap;
+  }
+  .captcha input{
+    width:70px;
+    background:transparent;
+    border:0;
+    border-bottom:1px solid var(--line);
+    outline:0;
+    color:var(--white);
+    font-size:1.05rem;
+    font-family:inherit;
+    padding:6px 4px;
+  }
+  .captcha.invalid input{border-bottom-color:#e0603f}
+  .captcha-error{
+    display:none;
+    color:#e0603f;
+    font-size:.82rem;
+  }
+  .captcha.invalid .captcha-error{display:block}
+
+  .send-btn{
+    margin-top:16px;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    background:var(--white);
+    color:var(--accent);
+    border:0;
+    border-radius:999px;
+    padding:16px 30px;
+    font-size:1rem;
+    font-weight:500;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .send-btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.25)}
+  .send-btn:disabled{opacity:.6;cursor:wait;transform:none}
+  .send-btn svg{width:16px;height:16px}
+
+  .success{display:none;max-width:560px}
+  .success .check{
+    width:52px;height:52px;border-radius:50%;
+    background:var(--accent);color:var(--dark);
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.4rem;margin-bottom:20px;
+  }
+  .success h2{font-weight:400;font-size:1.8rem;margin:0 0 10px}
+  .success p{color:var(--muted);margin:0}
+
+  /* RIGHT: SIDE PANEL */
+  .panel-side{
+    background:var(--white);
+    color:var(--dark);
+    padding:40px 28px;
+    display:flex;
+    flex-direction:column;
+  }
+  .side-logo{
+    font-weight:700;
+    font-size:1.05rem;
+    letter-spacing:.04em;
+  }
+  .side-nav{
+    margin-top:auto;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    text-align:right;
+  }
+  .side-nav a{
+    color:#b8b8b8;
+    text-decoration:none;
+    font-size:1.02rem;
+  }
+  .side-nav a.active{color:var(--dark);font-weight:600}
+  .side-foot{
+    margin-top:40px;
+    text-align:right;
+    font-size:.72rem;
+    color:#c7c7c7;
+    line-height:1.4;
+  }
+
+  @media (max-width:860px){
+    .page{grid-template-columns:1fr}
+    .panel-side{
+      order:-1;
+      flex-direction:row;
+      align-items:center;
+      justify-content:space-between;
+      padding:18px 20px;
+    }
+    .side-nav{flex-direction:row;margin-top:0;gap:20px}
+    .side-foot{display:none}
+    .panel-form{padding:40px 22px 48px}
+    .panel-form h1{margin-bottom:36px}
+  }
+
+  /* ABOUT / BENEFITS */
+  .about{
+    background:#161616;
+    padding:64px 6vw 72px;
+    border-top:1px solid rgba(255,255,255,.08);
+  }
+  .about-head{max-width:44ch;margin-bottom:44px}
+  .about-head .eyebrow{color:var(--accent);font-size:.85rem;letter-spacing:.06em;margin-bottom:8px}
+  .about-head h2{font-weight:400;font-size:clamp(1.5rem,2.6vw,2rem);margin:0;line-height:1.25}
+  .benefits{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
+  .benefit .num{color:var(--accent);font-size:.85rem;letter-spacing:.06em;margin-bottom:12px}
+  .benefit h3{font-weight:500;font-size:1.1rem;margin:0 0 8px}
+  .benefit p{color:var(--muted);font-size:.94rem;line-height:1.55;margin:0}
+  @media (max-width:760px){
+    .about{padding:48px 22px 56px}
+    .benefits{grid-template-columns:1fr;gap:28px}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <section class="panel-form">
+    <div id="formView">
+      <h1>Оставьте заявку — мы свяжемся с вами</h1>
+      <form action="https://formspree.io/f/xbglypoe" method="POST" id="leadForm">
+        <input type="hidden" name="_subject" value="Новая заявка с сайта">
+        <div class="field">
+          <label for="fullName">Ваше ФИО:</label>
+          <input id="fullName" name="ФИО" placeholder="Иванов Иван Иванович" required>
+        </div>
+        <div class="field" id="phoneField">
+          <label for="phone">Номер телефона:</label>
+          <input id="phone" name="Телефон" type="tel" inputmode="tel" placeholder="+7 (___) ___-__-__" required>
+          <div class="field-error">Введите телефон в формате +7 (___) ___-__-__</div>
+        </div>
+        <div class="captcha" id="captchaField">
+          <span class="captcha-question" id="captchaQuestion"></span>
+          <input id="captchaAnswer" type="text" inputmode="numeric" autocomplete="off" required>
+          <span class="captcha-error" id="captchaError">Неверно</span>
+        </div>
+        <button class="send-btn" id="submitBtn" type="submit">
+          Отправить
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+      </form>
+    </div>
+    <div class="success" id="success">
+      <div class="check">✓</div>
+      <h2>Заявка отправлена</h2>
+      <p>Спасибо! Мы получили ваши данные и свяжемся с вами в ближайшее время.</p>
+    </div>
+  </section>
+
+  <aside class="panel-side">
+    <div class="side-logo">Aspandiyar</div>
+    <nav class="side-nav">
+    </nav>
+    <div class="side-foot">© 2026<br>Все права защищены</div>
+  </aside>
+
+</div>
+
+<section class="about">
+  <div class="about-head">
+    <div class="eyebrow">Почему мы</div>
+    <h2>Работаем быстро, честно и на результат</h2>
+  </div>
+  <div class="benefits">
+    <div class="benefit">
+      <div class="num">01</div>
+      <h3>Оперативный ответ</h3>
+      <p>Перезваниваем в течение рабочего дня — без долгих очередей и автоответчиков.</p>
+    </div>
+    <div class="benefit">
+      <div class="num">02</div>
+      <h3>Никакого спама</h3>
+      <p>Данные используются только для связи по вашей заявке и нигде не передаются третьим лицам.</p>
+    </div>
+    <div class="benefit">
+      <div class="num">03</div>
+      <h3>Личный подход</h3>
+      <p>С каждым обращением работает отдельный специалист, а не общий скрипт.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  var captchaField = document.getElementById('captchaField');
+  var captchaQuestion = document.getElementById('captchaQuestion');
+  var captchaAnswer = document.getElementById('captchaAnswer');
+  var captchaSum = 0;
+
+  function newCaptcha() {
+    var a = Math.floor(Math.random() * 8) + 2;
+    var b = Math.floor(Math.random() * 8) + 2;
+    captchaSum = a + b;
+    captchaQuestion.textContent = 'Сколько будет ' + a + ' + ' + b + '?';
+    captchaAnswer.value = '';
+    captchaField.classList.remove('invalid');
+  }
+  newCaptcha();
+
+  captchaAnswer.addEventListener('input', function () {
+    captchaField.classList.remove('invalid');
+  });
+
+  var phoneInput = document.getElementById('phone');
+  var phoneField = document.getElementById('phoneField');
+
+  function formatPhone(raw) {
+    var digits = raw.replace(/\D/g, '');
+    if (digits.startsWith('8')) digits = '7' + digits.slice(1);
+    if (!digits.startsWith('7')) digits = '7' + digits;
+    digits = digits.slice(0, 11);
+    var d = digits.slice(1);
+    var out = '+7';
+    if (d.length > 0) out += ' (' + d.slice(0, 3);
+    if (d.length >= 3) out += ')';
+    if (d.length > 3) out += ' ' + d.slice(3, 6);
+    if (d.length > 6) out += '-' + d.slice(6, 8);
+    if (d.length > 8) out += '-' + d.slice(8, 10);
+    return out;
+  }
+
+  function isPhoneValid(value) {
+    var digits = value.replace(/\D/g, '');
+    return digits.length === 11;
+  }
+
+  phoneInput.addEventListener('input', function () {
+    var pos = this.selectionStart;
+    var before = this.value;
+    this.value = formatPhone(this.value);
+    phoneField.classList.remove('invalid');
+    var diff = this.value.length - before.length;
+    this.setSelectionRange(pos + diff, pos + diff);
+  });
+
+  phoneInput.addEventListener('focus', function () {
+    if (!this.value) this.value = '+7 ';
+  });
+
+  var form = document.getElementById('leadForm');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    if (!isPhoneValid(phoneInput.value)) {
+      phoneField.classList.add('invalid');
+      phoneInput.focus();
+      return;
+    }
+    phoneField.classList.remove('invalid');
+
+    if (parseInt(captchaAnswer.value, 10) !== captchaSum) {
+      captchaField.classList.add('invalid');
+      captchaAnswer.focus();
+      newCaptcha();
+      return;
+    }
+    captchaField.classList.remove('invalid');
+
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    }).then(function (res) {
+      if (res.ok) {
+        document.getElementById('formView').style.display = 'none';
+        document.getElementById('success').style.display = 'block';
+      } else {
+        btn.disabled = false;
+        alert('Не удалось отправить заявку. Попробуйте ещё раз.');
+      }
+    }).catch(function () {
+      btn.disabled = false;
+      alert('Не удалось отправить заявку. Проверьте соединение и попробуйте ещё раз.');
+    });
+  });
+</script>
+</body>
+</html>
